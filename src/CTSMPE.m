@@ -10,7 +10,7 @@ c,rho,alpha] = ReadEnvParameter('input_SMPE.txt');
 
 c0 = 1500;
 ns = 1;
-r  = dr:dr:rmax;
+r  = dr : dr : rmax;
 nr = length(r);
 w  = 2 * pi * f;
 k0 = w / c0;
@@ -28,7 +28,7 @@ X  = 4.0 / H ^2 / k0^2 * D * D + C;
 zd = 0 : 0.1 * dz : H;
 
 cw = interp1(dep, c, zd, 'linear');
-[~,~,~,~,~,starter]=selfstarter(zs,0.1 * dz,k0,w,cw',np,ns,c0,dr,length(zd));
+[~,~,~,~,~,starter] = selfstarter(zs,0.1 * dz,k0,w,cw',np,ns,c0,dr,length(zd));
 
 starter  = interp1(zd, starter, z, 'linear');
 psi      = zeros(N+1, nr);
@@ -48,6 +48,7 @@ for ip = 1 : np
     [L(ip, :, :), U(ip, :, :)] = lu( shiftdim( B(ip, :, :) ) );
     A(ip, :, :) = eye(N + 1) + pade1(ip) * X;  
 end
+
     q  = psi(:,1);
 for ir = 2 : nr
     for ip = 1 : np
@@ -68,7 +69,7 @@ u   = u * diag( 1 ./ sqrt(r) );
 %********************plot the results**************************
 
 tl    = - 20 * log10( abs( u ));
-ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
 tl_zr = interp1(zl, tl, zr, 'linear');
-ShowTLcurve(r,zr,tl_zr);   
+ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
+ShowTLcurve(r, zr, tl_zr);   
 toc;
