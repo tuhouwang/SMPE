@@ -10,7 +10,7 @@ tic;
     
 c0  = 1500;
 ns  = 1;
-r   = dr:dr:rmax;
+r   = dr : dr : rmax;
 nr  = length(r);
 w   = 2 * pi * f;
 k0  = w / c0;
@@ -44,9 +44,9 @@ end
 for ir = 2 : nr
     q  = psi(2:N, ir-1);
     for ip = 1 : np
-        R = shiftdim( A(ip, :, :) ) * q;
-        y = shiftdim( L(ip, :, :) ) \ R; 
-        q = shiftdim( U(ip, :, :) ) \ y;
+        R  = shiftdim( A(ip, :, :) ) * q;
+        y  = shiftdim( L(ip, :, :) ) \ R; 
+        q  = shiftdim( U(ip, :, :) ) \ y;
     end
     psi(2:N, ir) = exp(1i * k0 * dr) * q;
 end
@@ -54,10 +54,10 @@ end
 u = exp(1i * k0 * dr) .* psi * diag( 1 ./ sqrt(r) );
     
 %********************plot the results**************************
-tl = -20 * log10( abs( u ));   
+tl = - 20 * log10( abs( u ));   
 zl = 0 : dz : H;
 tl = interp1(z, tl, zl, 'linear'); 
-ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
 tl_zr = interp1(zl, tl, zr, 'linear'); 
-ShowTLcurve(r,zr,tl_zr);    
+ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
+ShowTLcurve(r, zr, tl_zr);    
 toc;
