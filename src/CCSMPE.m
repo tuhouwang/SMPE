@@ -17,13 +17,14 @@ k0  = w / c0;
 
 [D, x] = DifferenceMatrix(N);
 z      = (1.0 - x) * H / 2;          
-cs     = interp1(dep,  c,  z,  'linear');
-n      = (c0 ./ cs) .^ 2 - 1.0;
-X      = 4.0 / H^2 / k0 ^2 * D * D + diag(n);
+cs     = interp1(dep, c,     z, 'linear');
+alpha  = interp1(dep, alpha, z, 'linear');
+n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
+X      = 4.0 / H ^ 2 / k0 ^ 2 * D * D + diag(n);
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
-cw = interp1(dep,  c,  zd,  'linear');
+cw = interp1(dep, c, zd, 'linear');
 [~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
 
 psi = zeros(N+1, nr);
