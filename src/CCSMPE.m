@@ -18,9 +18,10 @@ k0  = w / c0;
 [D, x] = DifferenceMatrix(N);
 z      = (1.0 - x) * H / 2;          
 cs     = interp1(dep, c,     z, 'linear');
+rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
 n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
-X      = 4.0 / H ^ 2 / k0 ^ 2 * D * D + diag(n);
+X      = 4.0 / H ^ 2 / k0 ^ 2 * diag(rho) * D * diag(1.0 ./ rho) * D + diag(n);
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;

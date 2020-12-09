@@ -17,13 +17,15 @@ k0 = w / c0;
 
 x  = cos( (0 : N) * pi / N )';  
 z  = (1.0 - x) * H / 2;         
-cs = interp1(dep, c, z, 'linear');
+cs     = interp1(dep, c,     z, 'linear');
+rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
 n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
 
 C  = ConvolutionMatrix( ChebTransFFT(N, n) );
 D  = DerivationMatrix ( N + 1);
-X  = 4.0 / H ^ 2 / k0 ^ 2 * D * D + C;
+X  = 4.0 / H ^ 2 / k0 ^ 2 * ConvolutionMatrix( ChebTransFFT(N, rho) ) ...  
+           * D  * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) )* D + C;
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
