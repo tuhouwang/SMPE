@@ -34,33 +34,26 @@ cw = interp1(dep, c, zd, 'linear');
 [~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
 
 starter  = interp1(zd, starter, z, 'linear');
-psi      = zeros(N+1, nr);
+psi      = zeros(N + 1, nr);
 psi(:, 1)= ChebTransFFT(N, starter);
 [pade1, pade2] = epade(np, ns, 1, k0, dr);
 
 %*****************split-step interation******************  
-B = zeros(np, N + 1, N + 1);
-A = zeros(np, N + 1, N + 1);
-L = zeros(np, N + 1, N + 1);
-U = zeros(np, N + 1, N + 1); 
+B = zeros(N + 1, N + 1);
+A = zeros(N + 1, N + 1);
+T = eye(N + 1);
+
 for ip = 1 : np
-    A(ip, :, :) = eye(N + 1) + pade1(ip) * X;    
-    B(ip, :, :) = eye(N + 1) + pade2(ip) * X;
-    B(ip,   N,       :) =  1.0;
-    B(ip, N+1, 1:2:N+1) =  1.0; 
-    B(ip, N+1, 2:2:N+1) = -1.0; 
-    [L(ip, :, :), U(ip, :, :)] = lu( shiftdim( B(ip, :, :) ) ); 
+    A = eye(N + 1) + pade1(ip) * X;    
+    B = eye(N + 1) + pade2(ip) * X;
+    B(N  ,       :) =  1.0;
+    B(N+1, 1:2:N+1) =  1.0; 
+    B(N+1, 2:2:N+1) = -1.0; 
+    T               = B \ A * T;
 end
 
-    q  = psi(:, 1);
 for ir = 2 : nr
-    for ip = 1 : np
-        R  = shiftdim( A(ip, :, :) ) * q;
-        R( N : N + 1 ) = 0; 
-        y  = shiftdim( L(ip, :, :) ) \ R; 
-        q  = shiftdim( U(ip, :, :) ) \ y;           
-    end
-    psi(:, ir) = q;
+    psi(:, ir) = T * [psi(1 : N - 1, ir - 1); 0; 0];
 end
 
 psi = psi .* exp(1i * k0 * dr);

@@ -28,37 +28,30 @@ zd = 0 : 0.1 * dz : H;
 cw = interp1(dep, c, zd, 'linear');
 [~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
 
-psi = zeros(N+1, nr);
+psi = zeros(N + 1, nr);
 psi(:, 1) = interp1(zd, starter, z, 'linear');
 [pade1, pade2] = epade(np, ns, 1, k0, dr);
 
 %*****************split-step interation******************  
-B = zeros(np, N - 1, N - 1);
-A = zeros(np, N - 1, N - 1);
-L = zeros(np, N - 1, N - 1);
-U = zeros(np, N - 1, N - 1); 
+A = zeros(N - 1, N - 1);
+B = zeros(N - 1, N - 1);
+T = eye(N - 1);
 for ip = 1 : np
-    A(ip, :, :) = eye(N - 1) + pade1(ip) * X(2:N, 2:N);   
-    B(ip, :, :) = eye(N - 1) + pade2(ip) * X(2:N, 2:N);
-    [L(ip,:, :), U(ip, :, :)] = lu( shiftdim( B(ip, :, :) ) );
+     A = eye(N - 1) + pade1(ip) * X(2 : N, 2 : N);   
+     B = eye(N - 1) + pade2(ip) * X(2 : N, 2 : N);
+     T = B \ A * T;
 end
 
 for ir = 2 : nr
-    q  = psi(2 : N, ir-1);
-    for ip = 1 : np
-        R  = shiftdim( A(ip, :, :) ) * q;
-        y  = shiftdim( L(ip, :, :) ) \ R; 
-        q  = shiftdim( U(ip, :, :) ) \ y;
-    end
-    psi(2 : N, ir) = exp(1i * k0 * dr) * q;
+    psi(2 : N, ir) = T * psi(2 : N, ir - 1);
 end
 
 u = exp(1i * k0 * dr) .* psi * diag( 1 ./ sqrt(r) );
     
 %********************plot the results**************************
-tl = - 20 * log10( abs( u ));   
+tl = - 20 * log10( abs( u ) );   
 zl = 0 : dz : H;
-tl = interp1(z, tl, zl, 'linear'); 
+tl = interp1(z, tl, zl, 'linear');
 tl_zr = interp1(zl, tl, zr, 'linear'); 
 ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
 ShowTLcurve(r, zr, tl_zr);    
