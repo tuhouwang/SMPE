@@ -1,4 +1,4 @@
-% Ocean acoustic normal modes.
+% Ocean acoustics.
 
 % Copyright (C) 2021 Houwang Tu
 % -------------------------------------------------------------------------
@@ -15,88 +15,71 @@
 % You should have received a copy of the GNU General Public License along |
 % with this program. If not, see <http://www.gnu.org/licenses/>.          |
 %                                                                         |
-% Originally developed as part of the author's article (H.Tu, Y.Wang, X.  |
-% Ma et al., Applying the Chebyshev-Tau spectral method to solve the      |
-% parabolic equation model of wide-angle rational approximation in ocean  |
-% acoustics, Journal of Theoretical and Computational Acoustics,          |
-% https://doi.org/10.1007/s40857-021-00218-5) under the supervision of 
-Prof. Yongxian Wang, National University of Defense Technology, China.      |
-%                                                      |
+% Originally developed as part of the author's article (Y.Wang, H.Tu, W.  |
+% Liu et al., Application of a Chebyshev Collocation Method to Solve a    |
+% Parabolic Equation Model of Underwater Acoustic Propagation, Acoustics  |
+% Australia, https://doi.org/10.1007/s40857-021-00218-5) under the        |
+% supervision of Prof. Yongxian Wang, National University of Defense      |
+% Technology, China.                                                      |
 %																		  |
 % This Matlab/Scilab style code computes the range-independent acoustic   |
 % field using the Chebyshev collocation spectral method based on wide-    |
 % angle PE model.                                                         |
 % -------------------------------------------------------------------------
-clc
-close all
-clear 
+clc;
+clear;
+close all;
 tic;
 % edit 'input_SMPE.txt';
 
 [casename, N, np, f, zs, zr, rmax, dr, H, dz, tlmin, tlmax, dep, ...
-c, rho, alpha] = ReadEnvParameter('input_SMPE.txt');
+ c, rho, alpha] = ReadEnvParameter('input_SMPE.txt');
+    
+c0  = 1500;
+ns  = 1;
+r   = dr : dr : rmax;
+nr  = length(r);
+w   = 2 * pi * f;
+k0  = w / c0;
 
-c0 = 1500;
-ns = 1;
-r  = dr : dr : rmax;
-nr = length(r);
-w  = 2 * pi * f;
-k0 = w / c0;
-
-x  = cos( (0 : N) * pi / N )';  
-z  = (1.0 - x) * H / 2;         
+[D, x] = DifferenceMatrix(N);
+z      = (1.0 - x) * H / 2;          
 cs     = interp1(dep, c,     z, 'linear');
 rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
 n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
-
-C  = ConvolutionMatrix( ChebTransFFT(N, n) );
-D  = DerivationMatrix ( N + 1);
-X  = 4.0 / H ^ 2 / k0 ^ 2 * ConvolutionMatrix( ChebTransFFT(N, rho) ) ...  
-           * D  * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) )* D + C;
+X      = 4.0 / H ^ 2 / k0 ^ 2 * diag(rho) * D * diag(1.0 ./ rho) * D + diag(n);
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
-
 cw = interp1(dep, c, zd, 'linear');
 [~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
 
-starter  = interp1(zd, starter, z, 'linear');
-psi      = zeros(N + 1, nr);
-psi(:, 1)= ChebTransFFT(N, starter);
+psi = zeros(N + 1, nr);
+psi(:, 1) = interp1(zd, starter, z, 'linear');
 [pade1, pade2] = epade(np, ns, 1, k0, dr);
 
 %*****************split-step interation******************  
-B = zeros(N + 1, N + 1);
-A = zeros(N + 1, N + 1);
-T = eye(N + 1);
-
+A = zeros(N - 1, N - 1);
+B = zeros(N - 1, N - 1);
+T = eye(N - 1);
 for ip = 1 : np
-    A = eye(N + 1) + pade1(ip) * X;    
-    B = eye(N + 1) + pade2(ip) * X;
-    B(N  ,       :) =  1.0;
-    B(N+1, 1:2:N+1) =  1.0; 
-    B(N+1, 2:2:N+1) = -1.0; 
-    T               = B \ A * T;
+     A = eye(N - 1) + pade1(ip) * X(2 : N, 2 : N);   
+     B = eye(N - 1) + pade2(ip) * X(2 : N, 2 : N);
+     T = B \ A * T;
 end
-    T(N  ,       :) =  1.0;
-    T(N+1, 1:2:N+1) =  1.0; 
-    T(N+1, 2:2:N+1) = -1.0; 
 
 for ir = 2 : nr
-    psi(:, ir) = T * [psi(1 : N - 1, ir - 1); 0; 0];
+    psi(2 : N, ir) = T * psi(2 : N, ir - 1);
 end
 
-psi = psi .* exp(1i * k0 * dr);
-zl  = 0 : dz : H;
-xl  = 1 - 2 ./ H * zl' ;
-u   = InvChebTrans(psi, xl);
-u   = u * diag( 1 ./ sqrt(r) ); 
-
+u = exp(1i * k0 * dr) .* psi * diag( 1 ./ sqrt(r) );
+    
 %********************plot the results**************************
-
-tl    = - 20 * log10( abs( u ));
-tl_zr = interp1(zl,  tl,  zr,  'linear');
-ShowSoundField(r,  zl,  tl,  tlmin,  tlmax,  casename);
-ShowTLcurve(r,  zr,  tl_zr);   
+tl = - 20 * log10( abs( u ) );   
+zl = 0 : dz : H;
+tl = interp1(z, tl, zl, 'linear');
+tl_zr = interp1(zl, tl, zr, 'linear'); 
+ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
+ShowTLcurve(r, zr, tl_zr);    
 toc;
