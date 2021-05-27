@@ -1,4 +1,31 @@
+% Ocean acoustic normal modes.
 
+% Copyright (C) 2021 Houwang Tu
+% -------------------------------------------------------------------------
+% This program is free software: you can redistribute it and/or modify it |
+% under the terms of the GNU General Public License as published by the   |
+% Free Software Foundation, either version 3 of the License, or (at your  |
+% option) any later version.                                              |
+%                                                                         |
+% This code is distributed in the hope that it will be useful, but without|
+% any warranty; without even the implied warranty of merchantability or   |
+% fitness for a particular purpose. See the GNU General Public License for|
+% more details.                                                           |
+%                                                                         |
+% You should have received a copy of the GNU General Public License along |
+% with this program. If not, see <http://www.gnu.org/licenses/>.          |
+%                                                                         |
+% Originally developed as part of the author's article (H.Tu, Y.Wang, X.  |
+% Ma et al., Applying the Chebyshev-Tau spectral method to solve the      |
+% parabolic equation model of wide-angle rational approximation in ocean  |
+% acoustics, Journal of Theoretical and Computational Acoustics,          |
+% https://doi.org/10.1007/s40857-021-00218-5) under the supervision of    |
+% Prof. Yongxian Wang, National University of Defense Technology, China.  |
+
+% This Matlab/Scilab style code computes the range-independent acoustic   |
+% field using the Chebyshev-Tau spectral method based on wide-angle       |
+% PE model.                                                               |
+% -------------------------------------------------------------------------
 clc
 close all
 clear 
@@ -51,6 +78,9 @@ for ip = 1 : np
     B(N+1, 2:2:N+1) = -1.0; 
     T               = B \ A * T;
 end
+    T(N  ,       :) =  1.0;
+    T(N+1, 1:2:N+1) =  1.0; 
+    T(N+1, 2:2:N+1) = -1.0; 
 
 for ir = 2 : nr
     psi(:, ir) = T * [psi(1 : N - 1, ir - 1); 0; 0];
