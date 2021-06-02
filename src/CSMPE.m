@@ -18,10 +18,9 @@
 % Originally developed as part of the author's article (H.Tu, Y.Wang, X.  |
 % Ma et al., Applying the Chebyshev-Tau spectral method to solve the      |
 % parabolic equation model of wide-angle rational approximation in ocean  |
-% acoustics, Journal of Theoretical and Computational Acoustics,          |
-% https://doi.org/10.1007/s40857-021-00218-5) under the supervision of    |
+% acoustics, Journal of Theoretical and Computational Acoustics, 2021,    |
+% https://doi.org/10.1142/S2591728521500134) under the supervision of     |
 % Prof. Yongxian Wang, National University of Defense Technology, China.  |
-
 % This Matlab/Scilab style code computes the range-independent acoustic   |
 % field using the Chebyshev-Tau spectral method based on wide-angle       |
 % PE model.                                                               |
@@ -47,22 +46,24 @@ z  = (1.0 - x) * H / 2;
 cs     = interp1(dep, c,     z, 'linear');
 rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
-n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
+n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * ...
+         log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
 
 C  = ConvolutionMatrix( ChebTransFFT(N, n) );
 D  = DerivationMatrix ( N + 1);
 X  = 4.0 / H ^ 2 / k0 ^ 2 * ConvolutionMatrix( ChebTransFFT(N, rho) ) ...  
-           * D  * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) )* D + C;
+     * D  * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) ) * D + C;
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
 
 cw = interp1(dep, c, zd, 'linear');
-[~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
+[~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, ...
+                           w, cw', np, ns, c0, dr, length(zd));
 
-starter  = interp1(zd, starter, z, 'linear');
-psi      = zeros(N + 1, nr);
-psi(:, 1)= ChebTransFFT(N, starter);
+starter        = interp1(zd, starter, z, 'linear');
+psi            = zeros(N + 1, nr);
+psi(:, 1)      = ChebTransFFT(N, starter);
 [pade1, pade2] = epade(np, ns, 1, k0, dr);
 
 %*****************split-step interation******************  
@@ -76,7 +77,7 @@ for ip = 1 : np
     B(N  ,       :) =  1.0;
     B(N+1, 1:2:N+1) =  1.0; 
     B(N+1, 2:2:N+1) = -1.0; 
-    T               = B \ A * T;
+    T               =  B \ A * T;
 end
     T(N  ,       :) =  1.0;
     T(N+1, 1:2:N+1) =  1.0; 

@@ -18,7 +18,7 @@
 % Originally developed as part of the author's article (Y.Wang, H.Tu, W.  |
 % Liu et al., Application of a Chebyshev Collocation Method to Solve a    |
 % Parabolic Equation Model of Underwater Acoustic Propagation, Acoustics  |
-% Australia, https://doi.org/10.1007/s40857-021-00218-5) under the        |
+% Australia, 2021, https://doi.org/10.1007/s40857-021-00218-5) under the  |
 % supervision of Prof. Yongxian Wang, National University of Defense      |
 % Technology, China.                                                      |
 %																		  |
@@ -47,16 +47,19 @@ z      = (1.0 - x) * H / 2;
 cs     = interp1(dep, c,     z, 'linear');
 rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
-n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
-X      = 4.0 / H ^ 2 / k0 ^ 2 * diag(rho) * D * diag(1.0 ./ rho) * D + diag(n);
+n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * ...
+         log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
+X      = 4.0 / H ^ 2 / k0 ^ 2 * diag(rho) * D * diag(1.0 ...
+         ./ rho) * D + diag(n);
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
 cw = interp1(dep, c, zd, 'linear');
-[~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, w, cw', np, ns, c0, dr, length(zd));
+[~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, ...
+                           w, cw', np, ns, c0, dr, length(zd));
 
-psi = zeros(N + 1, nr);
-psi(:, 1) = interp1(zd, starter, z, 'linear');
+psi            = zeros(N + 1, nr);
+psi(:, 1)      = interp1(zd, starter, z, 'linear');
 [pade1, pade2] = epade(np, ns, 1, k0, dr);
 
 %*****************split-step interation******************  
@@ -76,9 +79,9 @@ end
 u = exp(1i * k0 * dr) .* psi * diag( 1 ./ sqrt(r) );
     
 %********************plot the results**************************
-tl = - 20 * log10( abs( u ) );   
-zl = 0 : dz : H;
-tl = interp1(z, tl, zl, 'linear');
+tl    = - 20 * log10( abs( u ) );   
+zl    = 0 : dz : H;
+tl    = interp1(z, tl, zl, 'linear');
 tl_zr = interp1(zl, tl, zr, 'linear'); 
 ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
 ShowTLcurve(r, zr, tl_zr);    
