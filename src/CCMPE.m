@@ -79,10 +79,10 @@ end
 u = exp(1i * k0 * dr) .* psi * diag( 1 ./ sqrt(r) );
     
 %********************plot the results**************************
-tl    = - 20 * log10( abs( u ) );   
-zl    = 0 : dz : H;
-tl    = interp1(z, tl, zl, 'linear');
-tl_zr = interp1(zl, tl, zr, 'linear'); 
+tl    =   - 20 * log10( abs( u ) );   
+zl    =   0 : dz : H;
+tl    =   interp1(z,  tl, zl, 'linear');
+tl_zr =   interp1(zl, tl, zr, 'linear'); 
 ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
 ShowTLcurve(r, zr, tl_zr);    
 toc;
