@@ -1,8 +1,9 @@
 function upd = solvetri( iz, u, r1, r2, r3, s1, s2, s3)
+  
   [nz, np] = size(r1);
-  v  = zeros(nz, 1);
-  nz = nz - 2;
-  epsb = 1.0d-30;
+  v        = zeros(nz, 1);
+  nz       = nz - 2;
+  epsb     = 1.0d-30;
   for jj = 1 : np
 
     % The right side.

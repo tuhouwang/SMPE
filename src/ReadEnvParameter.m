@@ -31,7 +31,7 @@ function [casename, N, np, freq, zs, zr, rmax, dr, H, dz, tlmin, tlmax, ...
         error('Error! input sound profile is unsuitable !');
     end
 
-    if( (H / dz - floor(H / dz)) ~=0 )
+    if((H / dz - floor(H / dz)) ~= 0 )
         error('Error! The input dz unsuitable !');
     end
 

@@ -6,6 +6,6 @@ function ShowSoundField(r,z,tl,tlmin,tlmax,casename)
     caxis( [tlmin tlmax] ); colormap( flipud(jet) );
     shading flat; view( 0, -90 );title(casename);
     xlabel( 'Range (km)')  ; ylabel( 'Depth (m)');  
-    set(gca,'FontSize',20,'FontName','Times New Roman');
+    set(gca,'FontSize',16,'FontName','Times New Roman');
 
 end

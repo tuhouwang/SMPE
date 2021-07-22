@@ -31,8 +31,8 @@ clear
 tic;
 % edit 'input_SMPE.txt';
 
-[casename, N, np, f, zs, zr, rmax, dr, H, dz, tlmin, tlmax, dep, ...
-c, rho, alpha] = ReadEnvParameter('input_SMPE.txt');
+[casename, N, np, f, zs, zr, rmax, dr, H, dz, tlmin, tlmax,...
+     dep, c, rho, alpha] = ReadEnvParameter('input_SMPE.txt');
 
 c0 = 1500;
 ns = 1;
@@ -47,19 +47,19 @@ cs     = interp1(dep, c,     z, 'linear');
 rho    = interp1(dep, rho,   z, 'linear');
 alpha  = interp1(dep, alpha, z, 'linear');
 n      = (c0 ./ cs .* (1.0 + 1i * alpha / (40.0 * pi * ...
-         log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
+                       log10( exp(1.0) ) ) ) ) .^ 2 - 1.0;
 
 C  = ConvolutionMatrix( ChebTransFFT(N, n) );
 D  = DerivationMatrix ( N + 1);
 X  = 4.0 / H ^ 2 / k0 ^ 2 * ConvolutionMatrix( ChebTransFFT(N, rho) ) ...  
-     * D  * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) ) * D + C;
+          * D * ConvolutionMatrix( ChebTransFFT(N, 1.0 ./ rho) ) * D + C;
 
 %*********calculated the initial field*************
 zd = 0 : 0.1 * dz : H;
 
 cw = interp1(dep, c, zd, 'linear');
 [~, ~, ~, ~, ~, starter] = selfstarter(zs, 0.1 * dz, k0, ...
-                           w, cw', np, ns, c0, dr, length(zd));
+                        w, cw', np, ns, c0, dr, length(zd));
 
 starter        = interp1(zd, starter, z, 'linear');
 psi            = zeros(N + 1, nr);
@@ -97,6 +97,6 @@ u   = u * diag( 1 ./ sqrt(r) );
 
 tl    = - 20 * log10( abs( u ));
 tl_zr = interp1(zl, tl, zr, 'linear');
-ShowSoundField(  r, zl, tl, tlmin, tlmax, casename);
-ShowTLcurve(r,  zr, tl_zr);   
+ShowSoundField(r, zl, tl, tlmin, tlmax, casename);
+ShowTLcurve(r,zr, tl_zr);   
 toc;

@@ -21,27 +21,27 @@ function [r1, r2, r3, s1, s2, s3, f3] = matrc(k0, dz, iz, rhob, ...
   dfact = 1 / 12;
 
 % New matrices
-  id=1:iz;
-  f1(id)=1./alpw(id);
-  f2(id)=1;
-  f3(id)=alpw(id);
-  ksq(id)=ksqw(id);
-  id=iz+1:nz+2;
-  f1(id)=rhob(id)./alpb(id);
-  f2(id)=1./rhob(id);
-  f3(id)=alpb(id);
-  ksq(id)=ksqb(id);
+  id = 1 : iz;
+  f1(id) = 1 ./ alpw(id);
+  f2(id) = 1;
+  f3(id) = alpw(id);
+  ksq(id)= ksqw(id);
+  id = iz + 1 : nz + 2;
+  f1(id) = rhob(id) ./ alpb(id);
+  f2(id) = 1 ./ rhob(id);
+  f3(id) = alpb(id);
+  ksq(id)= ksqb(id);
 
 % Discretization by Galerkin's method.
   i1 = 2; 
   i2 = nz + 1;
   id = i1 : i2;
-  c1 = cfact * f1(id) .* (f2(id-1) + f2(id)) .* f3(id - 1);
-  c2 = -cfact* f1(id) .* (f2(id-1) + 2*f2(id) + f2(id + 1)).*f3(id);
-  c3 = cfact * f1(id) .* (f2(id)   + f2(id + 1)) .* f3(id + 1);
-  d1 = c1 + dfact * (ksq(id - 1) + ksq(id)).';
-  d2 = c2 + dfact * (ksq(id - 1) + 6 * ksq(id) + ksq(id + 1)).';
-  d3 = c3 + dfact * (ksq(id) + ksq(id + 1)).';
+  c1 =  cfact * f1(id) .* (f2(id-1) +   f2(id))     .* f3(id - 1);
+  c2 = -cfact * f1(id) .* (f2(id-1) + 2*f2(id) + f2(id + 1)).* f3(id);
+  c3 =  cfact * f1(id) .* (f2(id)   +   f2(id + 1)) .* f3(id + 1);
+  d1 =  c1 + dfact * (ksq(id - 1) +     ksq(id)).';
+  d2 =  c2 + dfact * (ksq(id - 1) + 6 * ksq(id) + ksq(id + 1)).';
+  d3 =  c3 + dfact * (ksq(id)     +     ksq(id + 1)).';
 
   r1(id, :) = a1 + d1 * pdl;
   r2(id, :) = a2 + d2 * pdl;
