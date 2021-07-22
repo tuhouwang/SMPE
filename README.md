@@ -104,3 +104,7 @@ The "`input_SMPE.txt`" file include:
 
   There is a table of environmental parameter: the units are depth(m), speed(m/s),
   density(gm/cm$^3$) and attenuation (dB/wavelength)
+  
+    <img src="env.png" style="zoom:25%;" />
+
+  Figure 1. Range-independent marine environment.
