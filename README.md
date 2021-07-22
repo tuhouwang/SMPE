@@ -32,7 +32,7 @@ example2                                 ! casename
 40                                       ! tlmin (minimum value of TL in colorbar)
 70                                       ! tlmax (maximum value of TL in colorbar)
 30                                       ! n (profiles' points in ocean)
-0.00  1480.65   1.0   0.0                ! dep (depth m) c (sound speed m/s) rho (density gm/cm$^3$) alpha (attenuation dB/wavelength)
+0.00  1480.65   1.0   0.0                ! dep  c  rho  alpha 
 5.79  1480.80   1.0   0.0
 12.06 1481.01   1.0   0.0
 19.78 1480.94   1.0   0.0
