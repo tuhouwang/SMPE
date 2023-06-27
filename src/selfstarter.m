@@ -1,7 +1,8 @@
 
-function [u, alpw, alpb, ksqw, ksqb, psi1] = selfstarter ...
-          (zs, dz, k0, w, cw, np, ns, c0, dr, nz)
-      
+function p = selfstarter(zs, dz, w, cw, np, ns, c0, dr)
+    
+    k0   = w / c0;
+    nz   = length(cw);  
     alpw = sqrt(cw / c0);
     alpb = ones(1, nz);
     ksqw = (w ./ cw) .^ 2 - k0 ^ 2;
@@ -16,10 +17,10 @@ function [u, alpw, alpb, ksqw, ksqb, psi1] = selfstarter ...
     dis     = si - double(is);
     u(is)   = (1 - dis) * sqrt( 2 * pi / k0) / (dz * alpw(is));
     u(is+1) = dis * sqrt( 2 * pi / k0) / (dz * alpw(is));
-    clear is si dis
+
     % Divide the delta function by (1-X)**2 to get a smooth rhs.
-    pd1 = complex(  0  ); 
-    pd2 = complex( - 1 );
+    pd1 = complex(  0 ); 
+    pd2 = complex( -1 );
     [r1, r2, r3, s1, s2, s3, ~] = matrc(k0, dz, iz, rhob, ... 
                            alpw, alpb, ksqw, ksqb, pd1, pd2);
     u = complex(u);
@@ -30,5 +31,5 @@ function [u, alpw, alpb, ksqw, ksqb, psi1] = selfstarter ...
     [r1, r2, r3, s1, s2, s3, f3] = matrc(k0, dz, iz, rhob, ...
                             alpw, alpb, ksqw, ksqb, pd1, pd2);
     u = solvetri(iz, u, r1, r2, r3, s1, s2, s3);
-    psi1 = u .* f3;
+    p = u .* f3;
 end
