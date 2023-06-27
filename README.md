@@ -81,15 +81,15 @@ The "`input_SMPE.txt`" file include:
 
 * `casename` is the name of current example,
 
-* `Layers' is the layers of media,
+* `Layers` is the layers of media,
 
 * `np` is the number of items used for the rational approximation; the choice will also affect
    the accuracy of the approximation. More precisely, it is determined by the user according
    to the complexity of the research environment and the characteristics of the sound source. 
    
-* `ns' is the stability constraints of self-starter,
+* `ns` is the stability constraints of self-starter,
 
-* `c0' is the reference speed,
+* `c0` is the reference speed,
 
 * `freq` (frequency of sound source, Hz), 
 
@@ -106,7 +106,7 @@ The "`input_SMPE.txt`" file include:
 
 * `dz` (discrete step size in depth direction, m),
 
-* `Coll` (the numbers of truncated orders), the number of `Coll' corresponding to 
+* `Coll` (the numbers of truncated orders), the number of `Coll` corresponding to 
    the number of layers,
 
   Generally speaking, the more complicated the shape of the sound speed profile, 
@@ -117,11 +117,11 @@ The "`input_SMPE.txt`" file include:
   respectively, which used to determine the color range of the output
   transmission loss graph, `tlmin` must less than `tlmax`.
   
-* `N' is the number of sound speed profiles,
+* `N` is the number of sound speed profiles,
 
-* `depth' are the interfaces of media,
+* `depth` are the interfaces of media,
 
-* `range' are the ranges of updating sound speed profiles,
+* `range` are the ranges of updating sound speed profiles,
 
 * `n` is the amount of environmental profile data in ocean. 
 
