@@ -15,7 +15,7 @@ a Chebyshev Collocation Method to Solve a Parabolic Equation Model of Underwater
 Propagation, Acoustics Australia, 2021, https://doi.org/10.1007/s40857-021-00218-5)
 
 In 2023, we extended this model to be able to solve inhomogeneous oceans with any number of layers. 
-Please refer to (H.Tu,Y.Wang,Y.Zhang et al.,A spectrally discretized wide-angle parabolic equation 
+Please refer to (H. Tu,Y. Wang,Y. Zhang et al., A spectrally discretized wide-angle parabolic equation 
 model for simulating acoustic propagation in laterally inhomogeneous oceans, The Journal of Acoustical 
 Society of America, 2023, https://doi.org//10.1121/10.0019748) for details.
 
