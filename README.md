@@ -7,10 +7,6 @@ in laterally inhomogeneous oceans
 The program `SMPE.m`compute the laterally inhomogeneous acoustic field in Fig.1 using the 
 Chebyshev-Tau spectral method. 
 
-    <img src="env.png" style="zoom:25%;" />
-
-  Figure 1. Laterally inhomogeneous marine environment.
-
 `SMPE.m` were originally developed as part of the author's articles (H. Tu, Y. Wang, X. Ma et al., Applying the 
 Chebyshev-Tau spectral method to solve the  parabolic equation model of wide-angle rational 
 approximation in ocean acoustics, Journal of Theoretical and Computational Acoustics, 2021, 
@@ -131,3 +127,7 @@ The "`input_SMPE.txt`" file include:
 
   The following is a table of environmental parameter: the units are depth(m), speed(m/s),
   density(gm/cm$^3$) and attenuation (dB/wavelength)
+
+    <img src="env.png" style="zoom:25%;" />
+
+  Figure 1. Laterally inhomogeneous marine environment.
