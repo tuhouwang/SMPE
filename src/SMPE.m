@@ -49,10 +49,11 @@ if(Lowerboundary == 'A')
     
     % Add another layer of Perfectly Matched Layer with thickness of two 
     % wavelengths under the original layers.
-    lambda = 2 * c0 / freq;
-    depth  = [depth; depth(end) + lambda];
-    Layers = Layers + 1;
-    Coll   = [Coll; max(ceil(Coll(end) * 0.1), 20)];
+    lambda   = floor(2 * c0 / freq);
+    depth    = [depth; depth(end) + lambda];
+    Layers   = Layers + 1;
+    Coll_PML = ceil(lambda * sum(Coll) / depth(Layers-1));
+    Coll     = [Coll; max(Coll_PML,15)];
     
     % The sound speed, density and attenuating coefficient in the PML are 
     % consistent with the seabed (the first SSP).
@@ -118,7 +119,7 @@ for j = 1 : length(range)-1
     else
          % Long flat section, multiple steps can be calculated without 
          % updating the Depth Operator.     
-         phit = OneStep(X, Layers, Coll, pade1, pade2, np, ...
+         phit = OneStep_new(X, Layers, Coll, pade1, pade2, np, ...
                         dep(:,j), rho(:,j), phi(:,end), Lowerboundary);               
          
          phi = [phi,   phit];
@@ -145,7 +146,7 @@ end
 
 %*********************calculate and plot the results***********************
 tl    = - 20 * log10(abs(u));
-% tl_zr = interp1(z, tl, zr, 'linear');
+tl_zr = interp1(z, tl, zr, 'linear');
 ShowSoundField(r, z, tl, tlmin, tlmax, casename);
-% ShowTLcurve(r, zr, tl_zr);   
+ShowTLcurve(r, zr, tl_zr);
 toc;
